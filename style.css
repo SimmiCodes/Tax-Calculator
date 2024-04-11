@@ -1,0 +1,38 @@
+.containers{
+    max-width: 450px!important;
+    padding-top: 100px;
+}
+
+.navbar{
+    background-color:#9cacbb!important;
+}
+.threedot{
+    padding-left: 10px;
+    width: 50px;
+}
+.submit{
+    padding: 8px 150px!important;
+    background-color: #6459f5 !important;
+    margin-top: 40px;
+}
+::placeholder {
+    color: #9cacbb !important; /* Adjust the opacity value as needed */
+  }
+  .modaldesign{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 50px !important;
+  }
+  .close{
+    padding-left: 45%;
+    padding-bottom: 50px;
+    padding-top: 0px;
+  }
+  .modal-dialog{
+    margin: 130px 500px!important;
+    width: 500px!important;
+    height: 500px!important;
+    
+  }

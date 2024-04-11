@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Calculator</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg">
+      <div>
+        <img src="threedot.png" class="threedot">
+      </div>
+    </nav>
+  </header>
+
+  <main class="container containers mt-5 card p-5">
+    <form id="taxForm">
+      <div class="mb-3">
+        <label for="income" class="form-label">Enter gross annual income </label>
+        <input type="number" class="form-control" id="income" name="income" placeholder="Enter gross annual income">
+        <div id="incomeError" class="form-text text-danger d-none">Please enter a valid income.</div>
+        <div class="error-icon" id="incomeErrorIcon"><i class="fa fa-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please enter a valid income."></i></div>
+      </div>
+      <div class="mb-3">
+        <label for="extraIncome" class="form-label">Enter extra income</label>
+        <input type="number" class="form-control" id="extraIncome" name="extraIncome" placeholder="Enter extra income from other sources">
+        <div id="extraIncomeError" class="form-text text-danger d-none">Please enter a valid extra income.</div>
+        <div class="error-icon" id="extraIncomeErrorIcon"><i class="fa fa-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please enter a valid extra income."></i></div>
+      </div>
+      <div class="mb-3">
+        <label for="age" class="form-label">Enter Age group</label>
+        <select class="form-select" id="age" name="age">
+          <option value="Select">Select</option> 
+          <option value="<40">&lt; 40</option>
+          <option value="40-60">&ge; 40 &lt; 60</option>
+          <option value="≥60">&ge; 60</option>
+        </select>
+        <div id="ageError" class="form-text text-danger d-none">Please select your age group.</div>
+        <div class="error-icon" id="ageErrorIcon"><i class="fa fa-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please select your age group."></i></div>
+      </div>
+      <div class="mb-3">
+        <label for="deductions" class="form-label">Enter total applicable deductions</label>
+        <input type="number" class="form-control" id="deductions" name="deductions" placeholder="Add total applicable deductions">
+        <div id="deductionsError" class="form-text text-danger d-none">Please enter a valid deduction amount.</div>
+        <div class="error-icon" id="deductionsErrorIcon"><i class="fa fa-exclamation-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Please enter a valid deduction amount."></i></div>
+      </div>
+      <button type="button" class="btn btn-primary submit" onclick="calculateTax()">Submit</button>
+    </form>
+  </main>
+
+  <!-- Bootstrap JavaScript Bundle (with Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function calculateTax() {
+      // Reset error messages and icons
+      document.querySelectorAll('.form-text').forEach(error => error.classList.add('d-none'));
+      document.querySelectorAll('.error-icon').forEach(icon => icon.classList.add('d-none'));
+
+      // Get form values
+      const income = parseFloat(document.getElementById('income').value);
+      const extraIncome = parseFloat(document.getElementById('extraIncome').value);
+      const deductions = parseFloat(document.getElementById('deductions').value);
+      const age = document.getElementById('age').value;
+
+      // Validate form inputs
+      if (isNaN(income) || income <= 0) {
+        document.getElementById('incomeError').classList.remove('d-none');
+        document.getElementById('incomeErrorIcon').classList.remove('d-none');
+        return;
+      }
+      if (isNaN(extraIncome) || extraIncome < 0) {
+        document.getElementById('extraIncomeError').classList.remove('d-none');
+        document.getElementById('extraIncomeErrorIcon').classList.remove('d-none');
+        return;
+      }
+      if (isNaN(deductions) || deductions < 0) {
+        document.getElementById('deductionsError').classList.remove('d-none');
+        document.getElementById('deductionsErrorIcon').classList.remove('d-none');
+        return;
+      }
+      if (age === "Select") {
+        document.getElementById('ageError').classList.remove('d-none');
+        document.getElementById('ageErrorIcon').classList.remove('d-none');
+        return;
+      }
+
+      // Perform tax calculation
+      let tax = 0;
+      let overallIncome = income + extraIncome - deductions;
+      if (overallIncome > 800000) {
+        const taxableAmount = overallIncome - 800000;
+        if (age === "<40") {
+          tax = 0.3 * taxableAmount;
+        } else if (age === "40-60") {
+          tax = 0.4 * taxableAmount;
+        } else {
+          tax = 0.1 * taxableAmount;
+        }
+      }
+
+      // Calculate overall income after tax deduction
+      const overallIncomeAfterTax = overallIncome - tax;
+
+      // Display results in a modal
+      const modalBody = document.getElementById('modalBody');
+      modalBody.innerHTML = `
+        <div class="modaldesign">
+          <b><h3>Your overall income will be</h3></b>
+          <h4>${overallIncomeAfterTax.toFixed(2)}</h4>
+          <h5>after tax deductions</h5>
+        </div>
+      `;
+      const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+      modal.show();
+    }
+  </script>
+
+  <!-- Result Modal -->
+  <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog  pt-5">
+      <div class="modal-content shadow">
+        <div>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Result will be displayed here -->
+        </div>
+        <div class="close">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </
